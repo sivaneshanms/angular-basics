@@ -1,0 +1,50 @@
+<div>
+  <div class="dropdown-row">
+    <ng-select
+      [items]="makes"
+      bindLabel="make"
+      placeholder="Select Make"
+      [(ngModel)]="selectedMake"
+      (change)="onMakeChange()">
+    </ng-select>
+
+    <ng-select
+      [items]="models"
+      bindLabel="model"
+      placeholder="Select Model"
+      [(ngModel)]="selectedModel"
+      (change)="onModelChange()">
+    </ng-select>
+
+    <ng-select
+      [items]="years"
+      bindLabel="year"
+      placeholder="Select Year"
+      [(ngModel)]="selectedYear"
+      (change)="onYearChange()">
+    </ng-select>
+  </div>
+
+  <div class="search-row">
+    <ng-select
+      [items]="trims"
+      bindLabel="trim"
+      placeholder="Select Trim"
+      [(ngModel)]="selectedTrim"
+      (change)="onTrimChange()">
+    </ng-select>
+
+    <ng-select
+      [items]="engines"
+      bindLabel="engine"
+      placeholder="Select Engine"
+      [(ngModel)]="selectedEngine">
+    </ng-select>
+  </div>
+
+  <button (click)="preview()">Preview</button>
+  <button (click)="clearMenu()">Clear Menu</button>
+  <label>
+    <input type="checkbox" [(ngModel)]="disableApiRequests"> Disable API Requests
+  </label>
+</div>
