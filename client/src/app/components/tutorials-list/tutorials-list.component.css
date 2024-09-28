@@ -64,3 +64,58 @@ th {
   margin: 5px 0; /* Space between items */
 }
 
+.dropdown-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.trim-engine-container {
+  display: flex;
+  flex-direction: column;
+  width: 48%;
+}
+
+.trim-section, .engine-section {
+  margin-bottom: 20px;
+}
+
+.trim-row, .engine-row {
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.engine-search {
+  margin-bottom: 10px;
+  width: 100%;
+  padding: 5px;
+}
+
+.table-container {
+  margin-top: 20px;
+}
+
+.select-all {
+  margin-bottom: 10px;
+}
+
+.trim-engine-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.trim-engine-table th, .trim-engine-table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.trim-engine-table th {
+  background-color: #f2f2f2;
+}
+
+.trim-engine-table td input[type="checkbox"] {
+  margin-right: 10px;
+}
+

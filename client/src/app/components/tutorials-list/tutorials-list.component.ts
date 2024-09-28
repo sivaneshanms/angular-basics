@@ -48,10 +48,10 @@ export class TutorialsListComponent implements OnInit {
               this.years = data;
               break;
             case 'trim':
-              
-          console.log('data in trim:', data);
+              console.log('data in trim:', data);
               this.trims = data;
               this.engines = data;
+              this.combineTrimEngineData();
               break;
           }
         });
@@ -99,9 +99,7 @@ export class TutorialsListComponent implements OnInit {
   }
 
   // When the trim changes, fetch engines
-  onTrimChange() {
-    
-  }
+  onTrimChange() {}
 
   preview() {
     console.log({
@@ -129,7 +127,6 @@ export class TutorialsListComponent implements OnInit {
   }
 
   // Your existing properties...
-  
 
   // Existing constructor and ngOnInit...
 
@@ -137,7 +134,7 @@ export class TutorialsListComponent implements OnInit {
     const trimName = trim.trim; // Ensure you get the correct property
 
     if (this.selectedTrim.includes(trimName)) {
-      this.selectedTrim = this.selectedTrim.filter(item => item !== trimName); // Remove if already selected
+      this.selectedTrim = this.selectedTrim.filter((item) => item !== trimName); // Remove if already selected
     } else {
       this.selectedTrim.push(trimName); // Add if not selected
       this.selectedTrim = Array.from(new Set(this.selectedTrim)); // Ensure unique values
@@ -148,17 +145,16 @@ export class TutorialsListComponent implements OnInit {
     const engineName = engine.engine; // Ensure you get the correct property
 
     if (this.selectedEngine.includes(engineName)) {
-      this.selectedEngine = this.selectedEngine.filter(item => item !== engineName); // Remove if already selected
+      this.selectedEngine = this.selectedEngine.filter(
+        (item) => item !== engineName
+      ); // Remove if already selected
     } else {
       this.selectedEngine.push(engineName); // Add if not selected
       this.selectedEngine = Array.from(new Set(this.selectedEngine)); // Ensure unique values
     }
   }
 
-
   // Existing methods...
-
-
 
   // Select All for Trims
   toggleSelectAllTrims() {
@@ -178,28 +174,54 @@ export class TutorialsListComponent implements OnInit {
     }
   }
 
-  // Function to toggle individual trim selection
-  toggleTrim1(trim: any) {
-    const index = this.selectedTrim.indexOf(trim.trim);
-    if (index === -1) {
-      // If not found, add to the selection
-      this.selectedTrim.push(trim.trim);
-    } else {
-      // If found, remove from the selection
-      this.selectedTrim.splice(index, 1);
+  engineSearch: string = ''; // Search input for engines
+
+  // Existing constructor and ngOnInit...
+
+  // Filter engines based on search input
+  get filteredEngines() {
+    return this.engines.filter((engine) =>
+      engine.engine.toLowerCase().includes(this.engineSearch.toLowerCase())
+    );
+  }
+
+  combinedTrimEngineList: any[] = []; // Combined list of trim and engine per row
+  selectedItems: any[] = []; // Selected trims and engines per row
+
+  // Combine trims and engines into a single list
+  combineTrimEngineData() {
+    this.combinedTrimEngineList = [];
+    for (let i = 0; i < this.trims.length; i++) {
+      if (this.engines[i]) {
+        this.combinedTrimEngineList.push({
+          trim: this.trims[i].trim,
+          engine: this.engines[i].engine,
+        });
+      }
     }
   }
 
-  // Function to toggle individual engine selection
-  toggleEngine1(engine: any) {
-    const index = this.selectedEngine.indexOf(engine.engine);
+  // Toggle the selection of an individual trim-engine row
+  toggleItemSelection(item: any) {
+    const index = this.selectedItems.indexOf(item);
     if (index === -1) {
-      // If not found, add to the selection
-      this.selectedEngine.push(engine.engine);
+      this.selectedItems.push(item); // Add item if not selected
     } else {
-      // If found, remove from the selection
-      this.selectedEngine.splice(index, 1);
+      this.selectedItems.splice(index, 1); // Remove item if already selected
     }
   }
 
+  // Check if all items are selected
+  isAllSelected() {
+    return this.selectedItems.length === this.combinedTrimEngineList.length;
+  }
+
+  // Select or deselect all rows
+  toggleSelectAll() {
+    if (this.isAllSelected()) {
+      this.selectedItems = [];
+    } else {
+      this.selectedItems = [...this.combinedTrimEngineList];
+    }
+  }
 }
