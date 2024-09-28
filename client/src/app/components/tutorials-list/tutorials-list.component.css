@@ -1,34 +1,66 @@
-/* Flexbox layout for dropdowns */
-.dropdowns-container {
+.selection-container {
+  margin: 20px;
+  width: 100%; /* Ensure the container takes full width */
+}
+
+.dropdown-row {
   display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 20px; /* Increase space between dropdowns */
+  margin-bottom: 20px; /* Space below the dropdown rows */
 }
 
-.dropdowns-container ng-select {
-  flex: 1;
+.dropdown-row ng-select {
+  flex: 1; /* Make dropdowns take equal width */
+  min-width: 200px; /* Set a minimum width for each dropdown */
 }
 
-/* Table layout */
-.table-container {
-  margin-top: 20px;
+.trim-engine-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px; /* Increase space between trim and engine sections */
+}
+
+.trim-engine-container > div {
+  flex: 1; /* Allow each section to grow equally */
+}
+
+.trim-engine-container label {
+  display: block; /* Each checkbox label on a new line */
+}
+
+button {
+  margin-top: 10px;
 }
 
 table {
-  width: 100%;
-  border-collapse: collapse;
+  width: 100%; /* Full width */
+  border-collapse: collapse; /* Collapse borders */
+  margin-top: 10px; /* Space above the table */
 }
 
 th, td {
-  padding: 10px;
-  text-align: left;
-  border: 1px solid #ddd;
+  padding: 8px; /* Padding for cells */
+  text-align: left; /* Align text to the left */
+  border: 1px solid #ddd; /* Light border */
 }
 
 th {
-  background-color: #f2f2f2;
+  background-color: #f2f2f2; /* Light gray background for headers */
 }
 
-tbody tr:hover {
-  background-color: #f9f9f9;
+.trim-engine-container {
+  display: flex; /* Align sections in a row */
+  justify-content: space-between; /* Space between sections */
+  width: 100%; /* Full width */
+  margin-top: 20px; /* Space above the container */
 }
+
+.trim-section, .engine-section {
+  flex: 1; /* Equal width for both sections */
+  margin: 0 10px; /* Horizontal margin between sections */
+}
+
+.trim-item, .engine-item {
+  margin: 5px 0; /* Space between items */
+}
+

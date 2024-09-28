@@ -1,59 +1,66 @@
-<div>
-  <ng-select 
-    [items]="makes" 
-    bindLabel="make" 
-    placeholder="Select Make"
-    [(ngModel)]="selectedMake" 
-    (change)="onMakeChange()">
-  </ng-select>
+<div class="selection-container">
+  <div class="dropdown-row">
+    <ng-select 
+      [items]="makes" 
+      bindLabel="make" 
+      placeholder="Select Make"
+      [(ngModel)]="selectedMake" 
+      (change)="onMakeChange()">
+    </ng-select>
 
-  <ng-select 
-    [items]="models" 
-    bindLabel="model" 
-    placeholder="Select Model"
-    [(ngModel)]="selectedModel" 
-    (change)="onModelChange()">
-  </ng-select>
+    <ng-select 
+      [items]="models" 
+      bindLabel="model" 
+      placeholder="Select Model"
+      [(ngModel)]="selectedModel" 
+      (change)="onModelChange()">
+    </ng-select>
 
-  <ng-select 
-    [items]="years" 
-    bindLabel="year" 
-    placeholder="Select Year"
-    [(ngModel)]="selectedYear" 
-    (change)="onYearChange()">
-  </ng-select>
-
-  <!-- Trims Section -->
-  <div>
-    <h3>Trims</h3>
-    <label>
-      <input type="checkbox" (change)="toggleSelectAllTrims()" 
-             [checked]="selectedTrim.length === trims.length"> Select All
-    </label>
-    <div *ngFor="let trim of trims">
-      <label>
-        <input type="checkbox" 
-               [checked]="selectedTrim.includes(trim.trim)" 
-               (change)="toggleTrim(trim)"> {{ trim.trim }}
-      </label>
-    </div>
+    <ng-select 
+      [items]="years" 
+      bindLabel="year" 
+      placeholder="Select Year"
+      [(ngModel)]="selectedYear" 
+      (change)="onYearChange()">
+    </ng-select>
   </div>
 
-  <!-- Engines Section -->
-  <div>
-    <h3>Engines</h3>
-    <label>
-      <input type="checkbox" (change)="toggleSelectAllEngines()" 
-             [checked]="selectedEngine.length === engines.length"> Select All
-    </label>
-    <div *ngFor="let engine of engines">
-      <label>
-        <input type="checkbox" 
-               [checked]="selectedEngine.includes(engine.engine)" 
-               (change)="toggleEngine(engine)"> {{ engine.engine }}
-      </label>
+<div class="dropdown-row">
+  <div class="trim-engine-container">
+    <div class="trim-section">
+      <button (click)="toggleSelectAllTrims()">Select All Trims</button>
+      <div class="trim-list">
+        <div *ngFor="let trim of trims" class="trim-item">
+          <label>
+            <input 
+              type="checkbox" 
+              [checked]="selectedTrim.includes(trim.trim)" 
+              (change)="toggleTrim(trim)"> 
+            {{ trim.trim }}
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="engine-section">
+      <button (click)="toggleSelectAllEngines()">Select All Engines</button>
+      <div class="engine-list">
+        <div *ngFor="let engine of engines" class="engine-item">
+          <label>
+            <input 
+              type="checkbox" 
+              [checked]="selectedEngine.includes(engine.engine)" 
+              (change)="toggleEngine(engine)"> 
+            {{ engine.engine }}
+          </label>
+        </div>
+      </div>
     </div>
   </div>
+</div>
+
+
+
 
   <button (click)="preview()">Preview</button>
   <button (click)="clearMenu()">Clear Menu</button>

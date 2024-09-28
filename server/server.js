@@ -53,7 +53,7 @@ app.get("/api/:type", async (req, res) => {
             break;
         case "trim":
             query =
-                "SELECT DISTINCT trim FROM cars WHERE make = $1 AND model = $2 AND year = $3";
+                "SELECT DISTINCT trim, engine FROM cars WHERE make = $1 AND model = $2 AND year = $3";
             break;
         case "engine":
             query =

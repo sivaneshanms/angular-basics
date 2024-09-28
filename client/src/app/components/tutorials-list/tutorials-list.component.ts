@@ -36,7 +36,7 @@ export class TutorialsListComponent implements OnInit {
 
       this.http
         .get<any[]>(`http://localhost:5000/api/${type}`, { params })
-        .subscribe((data) => {
+        .subscribe((data: any) => {
           switch (type) {
             case 'make':
               this.makes = data;
@@ -48,9 +48,9 @@ export class TutorialsListComponent implements OnInit {
               this.years = data;
               break;
             case 'trim':
+              
+          console.log('data in trim:', data);
               this.trims = data;
-              break;
-            case 'engine':
               this.engines = data;
               break;
           }
@@ -89,11 +89,11 @@ export class TutorialsListComponent implements OnInit {
       model: this.selectedModel.model,
       year: this.selectedYear.year,
     });
-    this.getData('engine', {
-      make: this.selectedMake.make,
-      model: this.selectedModel.model,
-      year: this.selectedYear.year,
-    });
+    // this.getData('engine', {
+    //   make: this.selectedMake.make,
+    //   model: this.selectedModel.model,
+    //   year: this.selectedYear.year,
+    // });
     this.engines = []; // Reset engines
     this.selectedEngine = []; // Reset engine selection
   }
@@ -128,6 +128,38 @@ export class TutorialsListComponent implements OnInit {
     });
   }
 
+  // Your existing properties...
+  
+
+  // Existing constructor and ngOnInit...
+
+  toggleTrim(trim: any) {
+    const trimName = trim.trim; // Ensure you get the correct property
+
+    if (this.selectedTrim.includes(trimName)) {
+      this.selectedTrim = this.selectedTrim.filter(item => item !== trimName); // Remove if already selected
+    } else {
+      this.selectedTrim.push(trimName); // Add if not selected
+      this.selectedTrim = Array.from(new Set(this.selectedTrim)); // Ensure unique values
+    }
+  }
+
+  toggleEngine(engine: any) {
+    const engineName = engine.engine; // Ensure you get the correct property
+
+    if (this.selectedEngine.includes(engineName)) {
+      this.selectedEngine = this.selectedEngine.filter(item => item !== engineName); // Remove if already selected
+    } else {
+      this.selectedEngine.push(engineName); // Add if not selected
+      this.selectedEngine = Array.from(new Set(this.selectedEngine)); // Ensure unique values
+    }
+  }
+
+
+  // Existing methods...
+
+
+
   // Select All for Trims
   toggleSelectAllTrims() {
     if (this.selectedTrim.length === this.trims.length) {
@@ -147,7 +179,7 @@ export class TutorialsListComponent implements OnInit {
   }
 
   // Function to toggle individual trim selection
-  toggleTrim(trim: any) {
+  toggleTrim1(trim: any) {
     const index = this.selectedTrim.indexOf(trim.trim);
     if (index === -1) {
       // If not found, add to the selection
@@ -159,7 +191,7 @@ export class TutorialsListComponent implements OnInit {
   }
 
   // Function to toggle individual engine selection
-  toggleEngine(engine: any) {
+  toggleEngine1(engine: any) {
     const index = this.selectedEngine.indexOf(engine.engine);
     if (index === -1) {
       // If not found, add to the selection
@@ -169,4 +201,5 @@ export class TutorialsListComponent implements OnInit {
       this.selectedEngine.splice(index, 1);
     }
   }
+
 }
