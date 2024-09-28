@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const { Pool } = require("pg");
 const redis = require("redis");
+const axios = require("axios");
+const cheerio = require("cheerio");
 
 // PostgreSQL setup
 const pool = new Pool({
@@ -32,6 +34,82 @@ const cache = (req, res, next) => {
     });
 };
 
+// task 2 - Web scraping
+
+app.get("/:url(*)", async (req, res) => {
+    // Get the URL from the query parameters
+    const url = req.params.url;
+    // console.log('url', url)
+
+    if (!url) {
+        return res.status(400).send("Error: URL parameter is required");
+    }
+
+    try {
+        const response = await axios.get(url);
+        const $ = cheerio.load(response.data);
+
+        const name = $("h2.panel-title span.prodDescriptH2").text();
+        const description = $('meta[itemprop="description"]').attr("content");
+        const partNumber = $("span.item-part-number strong").text();
+        const supersession = $("span.alt-stock-code-text strong").text().trim();
+
+        // Extracting price information
+        const price = $('meta[itemprop="price"]').attr("content");
+        const currency = $('meta[itemprop="priceCurrency"]').attr("content");
+        const msrp = $(".msrpRow").text().replace("MSRP: ", "").trim();
+        const discount = $(
+            "#ctl00_Content_PageBody_AddToCartControl_savingsLabelDealer"
+        )
+            .text()
+            .replace("All Discounts: ", "")
+            .trim();
+
+        // Extracting description and fitment details
+        const coverDescription = $(".item-desc p").first().text().trim();
+
+        // Splitting fitment details
+        const fitmentModels = $(".item-desc p b").text().trim(); // Vehicle models inside the <b> tag
+        const engineSpecs = $(".item-desc p")
+            .eq(1)
+            .contents()
+            .filter(function () {
+                return this.nodeType === 3; // Filter out the text nodes (excluding the <b> tag)
+            })
+            .text()
+            .trim();
+
+        // Extracting dealer rating and review count
+        const dealerRating = $("#ratingValue").text().trim();
+        const reviewCount = $('.dealerReviewCount span[itemprop="reviewCount"]')
+            .text()
+            .trim();
+
+        // Organize the extracted data into key-value pairs
+        const productInfo = {
+            name,
+            description,
+            partNumber,
+            supersession,
+            price: `${currency} ${price}`,
+            msrp,
+            discount,
+            coverDescription,
+            fitment: {
+                models: fitmentModels,
+                engineSpecs,
+            },
+            dealerRating,
+            reviewCount,
+        };
+
+        // Send the response as JSON
+        res.json(productInfo);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error fetching product information");
+    }
+});
 // API routes
 app.get("/api/:type", async (req, res) => {
     const { type } = req.params;
