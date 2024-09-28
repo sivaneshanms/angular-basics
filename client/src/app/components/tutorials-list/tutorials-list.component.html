@@ -1,7 +1,9 @@
 <div class="selection-container">
   <div class="dropdown-row">
+    <!-- <label for="make">Make</label> -->
     <ng-select 
       [items]="makes" 
+      id="make"
       bindLabel="make" 
       placeholder="Select Make"
       [(ngModel)]="selectedMake" 
@@ -25,7 +27,7 @@
     </ng-select>
   </div>
 
-<div class="table-container">
+<div *ngIf="combinedTrimEngineList.length" class="table-container">
   <!-- Select All Checkbox -->
   <div class="select-all">
     <label>
@@ -37,8 +39,14 @@
     </label>
   </div>
 
+  <input 
+        type="text" 
+        placeholder="Search Engine" 
+        [(ngModel)]="engineSearch" 
+        class="engine-search" />
+
   <!-- Table to display Trim and Engine -->
-  <table class="trim-engine-table">
+  <table  class="trim-engine-table">
     <thead>
       <tr>
         <th>Select</th>
@@ -47,7 +55,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let item of combinedTrimEngineList">
+      <tr *ngFor="let item of engineSearch.length ? filteredEngines : combinedTrimEngineList">
         <td>
           <input 
             type="checkbox" 
@@ -63,10 +71,25 @@
 
 
 
-
+<div *ngIf="combinedTrimEngineList.length">
   <button (click)="preview()">Preview</button>
-  <button (click)="clearMenu()">Clear Menu</button>
-  <label>
-    <input type="checkbox" [(ngModel)]="disableApiRequests"> Disable API Requests
-  </label>
+  <button (click)="clearMenu()">Clear All</button>
+  </div>
+
+  <form *ngIf="showReport">
+  <table class="trim-engine-table">
+    <thead>
+      <tr>
+        <th>Trim</th>
+        <th>Engine</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of selectedItems">
+        <td>{{ item.trim }}</td>
+        <td>{{ item.engine }}</td>
+      </tr>
+    </tbody>
+  </table>
+  </form>
 </div>

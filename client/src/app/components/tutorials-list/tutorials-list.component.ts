@@ -18,6 +18,9 @@ export class TutorialsListComponent implements OnInit {
   selectedTrim: any[] = []; // Array to hold selected trims
   selectedEngine: any[] = []; // Array to hold selected engines
   disableApiRequests: boolean = false;
+  showReport: boolean = false;
+  combinedTrimEngineList: any[] = []; // Combined list of trim and engine per row
+  selectedItems: any[] = [];
 
   constructor(private http: HttpClient) {}
 
@@ -102,28 +105,37 @@ export class TutorialsListComponent implements OnInit {
   onTrimChange() {}
 
   preview() {
-    console.log({
-      make: this.selectedMake,
-      model: this.selectedModel,
-      year: this.selectedYear,
-      trims: this.selectedTrim,
-      engines: this.selectedEngine,
-    });
+    this.showReport = true;
   }
 
   clearMenu() {
-    this.http.post('http://localhost:5000/clear-cache', {}).subscribe(() => {
-      this.makes = [];
-      this.models = [];
-      this.years = [];
-      this.trims = [];
-      this.engines = [];
-      this.selectedMake = null;
-      this.selectedModel = null;
-      this.selectedYear = null;
-      this.selectedTrim = [];
-      this.selectedEngine = [];
-    });
+    // this.http.post('http://localhost:5000/clear-cache', {}).subscribe(() => {
+      
+    //   this.models = [];
+    //   this.years = [];
+    //   this.trims = [];
+    //   this.engines = [];
+    //   this.selectedMake = null;
+    //   this.selectedModel = null;
+    //   this.selectedYear = null;
+    //   this.selectedTrim = [];
+    //   this.selectedEngine = [];
+    //   this.combinedTrimEngineList = []; // Combined list of trim and engine per row
+    //   this.selectedItems = [];
+    //   this.showReport = false;
+    // });
+    this.models = [];
+    this.years = [];
+    this.trims = [];
+    this.engines = [];
+    this.selectedMake = null;
+    this.selectedModel = null;
+    this.selectedYear = null;
+    this.selectedTrim = [];
+    this.selectedEngine = [];
+    this.combinedTrimEngineList = []; // Combined list of trim and engine per row
+    this.selectedItems = [];
+    this.showReport = false;
   }
 
   // Your existing properties...
@@ -180,13 +192,12 @@ export class TutorialsListComponent implements OnInit {
 
   // Filter engines based on search input
   get filteredEngines() {
-    return this.engines.filter((engine) =>
+    return this.combinedTrimEngineList.filter((engine) =>
       engine.engine.toLowerCase().includes(this.engineSearch.toLowerCase())
     );
   }
 
-  combinedTrimEngineList: any[] = []; // Combined list of trim and engine per row
-  selectedItems: any[] = []; // Selected trims and engines per row
+  // Selected trims and engines per row
 
   // Combine trims and engines into a single list
   combineTrimEngineData() {
