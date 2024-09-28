@@ -1,0 +1,1 @@
+Angular basic project with the use of ng-select and web scraping implementation
