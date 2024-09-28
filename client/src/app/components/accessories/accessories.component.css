@@ -16,7 +16,7 @@
 
 .trim-engine-container {
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   gap: 40px; /* Increase space between trim and engine sections */
 }
 
@@ -50,7 +50,7 @@ th {
 
 .trim-engine-container {
   display: flex; /* Align sections in a row */
-  justify-content: space-between; /* Space between sections */
+  /* justify-content: space-between; Space between sections */
   width: 100%; /* Full width */
   margin-top: 20px; /* Space above the container */
 }
@@ -66,7 +66,6 @@ th {
 
 .dropdown-row {
   display: flex;
-  justify-content: space-between;
   width: 100%;
 }
 

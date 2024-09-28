@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
 @Component({
-  selector: 'app-tutorials-list',
-  templateUrl: './tutorials-list.component.html',
-  styleUrls: ['./tutorials-list.component.css'],
+  selector: 'app-accessories',
+  templateUrl: './accessories.component.html',
+  styleUrls: ['./accessories.component.css'],
 })
-export class TutorialsListComponent implements OnInit {
+export class AccessoriesListComponent implements OnInit {
   makes: any[] = [];
   models: any[] = [];
   years: any[] = [];
