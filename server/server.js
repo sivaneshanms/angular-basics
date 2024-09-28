@@ -36,7 +36,7 @@ const cache = (req, res, next) => {
 
 // task 2 - Web scraping
 
-app.get("/:url(*)", async (req, res) => {
+app.get("/scrap/:url(*)", async (req, res) => {
     // Get the URL from the query parameters
     const url = req.params.url;
     // console.log('url', url)
