@@ -15,23 +15,43 @@ const pool = new Pool({
 });
 
 // Redis setup
-const redisClient = redis.createClient();
+const client = redis.createClient();
+// console.log('redisClient', client)
+
+// Handle connection events
+client.on('connect', () => {
+  console.log('Connected to Redis server');
+});
+
+client.on('error', (err) => {
+  console.error('Redis error:', err);
+});
+
+// Connect to the Redis server
+client.connect();
+
+
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 // Middleware to cache results
-const cache = (req, res, next) => {
+const cache = async (req, res, next) => {
     const { type } = req.params;
-    redisClient.get(type, (err, data) => {
-        if (err) throw err;
-        if (data !== null) {
-            res.send(JSON.parse(data));
-        } else {
-            next();
-        }
-    });
+    console.log('type', type)
+    const params = Object.values(req.query);
+    console.log('params', params)
+    const key = type === "make" ? type : `${type}-${params.slice(-1)}`;
+    console.log('key', key)
+    const resp = await client.get(key);
+    if (resp) {
+        console.log('from cache')
+        res.send(JSON.parse(resp))
+    } else {
+        console.log('cache miss')
+        next();
+    }
 };
 
 // task 2 - Web scraping
@@ -111,11 +131,11 @@ app.get("/scrap/:url(*)", async (req, res) => {
     }
 });
 // API routes
-app.get("/api/:type", async (req, res) => {
+app.get("/api/:type", cache, async (req, res) => {
     const { type } = req.params;
-    console.log('req.query', req.query.make)
+    console.log("req.query", req.query.make);
 
-    console.log('type', type)
+    console.log("type", type);
 
     let query;
     switch (type) {
@@ -144,10 +164,12 @@ app.get("/api/:type", async (req, res) => {
 
     try {
         const params = Object.values(req.query);
+        console.log('params', params)
         const { rows } = await pool.query(query, params);
 
         // Cache the result
-        // redisClient.setEx(type, 3600, JSON.stringify(rows));
+        const key = type === 'make' ? type : `${type}-${params.slice(-1)}`
+        client.set(key, JSON.stringify(rows));
         res.json(rows);
     } catch (error) {
         console.error(error);
@@ -157,8 +179,9 @@ app.get("/api/:type", async (req, res) => {
 
 // Clear cache on delete
 app.post("/clear-cache", (req, res) => {
-    redisClient.flushAll();
+    client.flushAll();
     res.send("Cache cleared");
+    console.log("Cache cleared");
 });
 
 app.listen(5000, () => {
