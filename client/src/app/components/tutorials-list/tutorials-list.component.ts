@@ -12,11 +12,11 @@ export class TutorialsListComponent implements OnInit {
   years: any[] = [];
   trims: any[] = [];
   engines: any[] = [];
-  selectedMake: any;
-  selectedModel: any;
-  selectedYear: any;
-  selectedTrim: any;
-  selectedEngine: any;
+  selectedMake: any = null;
+  selectedModel: any = null;
+  selectedYear: any = null;
+  selectedTrim: any[] = []; // Array to hold selected trims
+  selectedEngine: any[] = []; // Array to hold selected engines
   disableApiRequests: boolean = false;
 
   constructor(private http: HttpClient) {}
@@ -25,10 +25,8 @@ export class TutorialsListComponent implements OnInit {
     this.getData('make');
   }
 
-  // Method to get data with optional query parameters
   getData(type: string, query: any = {}) {
     if (!this.disableApiRequests) {
-      // Set up query parameters if any exist
       let params = new HttpParams();
       Object.keys(query).forEach((key) => {
         if (query[key]) {
@@ -60,51 +58,61 @@ export class TutorialsListComponent implements OnInit {
     }
   }
 
-  // When the make changes, pass selectedMake as a query param to fetch models
+  // When the make changes, fetch models
   onMakeChange() {
     this.getData('model', { make: this.selectedMake.make });
-    console.log('this.selectedMake', this.selectedMake.make)
+    this.selectedModel = null; // Reset model selection
+    this.selectedYear = null; // Reset year selection
+    this.trims = []; // Reset trims
+    this.engines = []; // Reset engines
+    this.selectedTrim = []; // Reset trim selection
+    this.selectedEngine = []; // Reset engine selection
   }
 
-  // When the model changes, pass selectedMake and selectedModel to fetch years
+  // When the model changes, fetch years
   onModelChange() {
     this.getData('year', {
       make: this.selectedMake.make,
       model: this.selectedModel.model,
     });
+    this.selectedYear = null; // Reset year selection
+    this.trims = []; // Reset trims
+    this.engines = []; // Reset engines
+    this.selectedTrim = []; // Reset trim selection
+    this.selectedEngine = []; // Reset engine selection
   }
 
-  // When the year changes, pass make, model, and year to fetch trims
+  // When the year changes, fetch trims
   onYearChange() {
     this.getData('trim', {
       make: this.selectedMake.make,
       model: this.selectedModel.model,
       year: this.selectedYear.year,
     });
-  }
-
-  // When the trim changes, pass make, model, year, and trim to fetch engines
-  onTrimChange() {
     this.getData('engine', {
       make: this.selectedMake.make,
       model: this.selectedModel.model,
       year: this.selectedYear.year,
-      trim: this.selectedTrim.trim,
     });
+    this.engines = []; // Reset engines
+    this.selectedEngine = []; // Reset engine selection
   }
 
-  // Preview the selected options
+  // When the trim changes, fetch engines
+  onTrimChange() {
+    
+  }
+
   preview() {
     console.log({
       make: this.selectedMake,
       model: this.selectedModel,
       year: this.selectedYear,
-      trim: this.selectedTrim,
-      engine: this.selectedEngine,
+      trims: this.selectedTrim,
+      engines: this.selectedEngine,
     });
   }
 
-  // Clear the menu and reset the selections
   clearMenu() {
     this.http.post('http://localhost:5000/clear-cache', {}).subscribe(() => {
       this.makes = [];
@@ -115,8 +123,50 @@ export class TutorialsListComponent implements OnInit {
       this.selectedMake = null;
       this.selectedModel = null;
       this.selectedYear = null;
-      this.selectedTrim = null;
-      this.selectedEngine = null;
+      this.selectedTrim = [];
+      this.selectedEngine = [];
     });
+  }
+
+  // Select All for Trims
+  toggleSelectAllTrims() {
+    if (this.selectedTrim.length === this.trims.length) {
+      this.selectedTrim = []; // Deselect all if already selected
+    } else {
+      this.selectedTrim = this.trims.map((trim) => trim.trim); // Select all trims
+    }
+  }
+
+  // Select All for Engines
+  toggleSelectAllEngines() {
+    if (this.selectedEngine.length === this.engines.length) {
+      this.selectedEngine = []; // Deselect all if already selected
+    } else {
+      this.selectedEngine = this.engines.map((engine) => engine.engine); // Select all engines
+    }
+  }
+
+  // Function to toggle individual trim selection
+  toggleTrim(trim: any) {
+    const index = this.selectedTrim.indexOf(trim.trim);
+    if (index === -1) {
+      // If not found, add to the selection
+      this.selectedTrim.push(trim.trim);
+    } else {
+      // If found, remove from the selection
+      this.selectedTrim.splice(index, 1);
+    }
+  }
+
+  // Function to toggle individual engine selection
+  toggleEngine(engine: any) {
+    const index = this.selectedEngine.indexOf(engine.engine);
+    if (index === -1) {
+      // If not found, add to the selection
+      this.selectedEngine.push(engine.engine);
+    } else {
+      // If found, remove from the selection
+      this.selectedEngine.splice(index, 1);
+    }
   }
 }

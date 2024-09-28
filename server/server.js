@@ -57,7 +57,7 @@ app.get("/api/:type", async (req, res) => {
             break;
         case "engine":
             query =
-                "SELECT DISTINCT engine FROM cars WHERE make = $1 AND model = $2 AND year = $3 AND trim = $4";
+                "SELECT DISTINCT engine FROM cars WHERE make = $1 AND model = $2 AND year = $3";
             break;
         default:
             res.status(400).send("Invalid type");
