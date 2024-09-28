@@ -8,7 +8,8 @@
       id="make"
       bindLabel="make" 
       placeholder="Select Make"
-      [(ngModel)]="selectedMake" 
+      [multiple]="true"
+      [(ngModel)]="selectedMakes" 
       (change)="onMakeChange()">
     </ng-select>
   </div>
@@ -21,7 +22,8 @@
       id="model"
       bindLabel="model" 
       placeholder="Select Model"
-      [(ngModel)]="selectedModel" 
+      [multiple]="true"
+      [(ngModel)]="selectedModels" 
       (change)="onModelChange()">
     </ng-select>
   </div>
@@ -34,7 +36,8 @@
       id="year"
       bindLabel="year" 
       placeholder="Select Year"
-      [(ngModel)]="selectedYear" 
+      [multiple]="true"
+      [(ngModel)]="selectedYears" 
       (change)="onYearChange()">
     </ng-select>
   </div>
@@ -49,7 +52,7 @@
         type="checkbox" 
         [checked]="isAllSelected()" 
         (change)="toggleSelectAll()"> 
-      Select All From {{ selectedMake.make }} {{ selectedModel.model }} {{selectedYear.year}}
+      Select All
     </label>
   </div>
 

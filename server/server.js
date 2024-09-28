@@ -133,29 +133,64 @@ app.get("/scrap/:url(*)", async (req, res) => {
 // API routes
 app.get("/api/:type", cache, async (req, res) => {
     const { type } = req.params;
-    console.log("req.query", req.query.make);
-
-    console.log("type", type);
-
     let query;
+    let params = [];
+
     switch (type) {
         case "make":
+            // Query remains the same since we are selecting distinct makes
             query = "SELECT DISTINCT make FROM cars";
             break;
         case "model":
-            query = "SELECT DISTINCT model FROM cars WHERE make = $1";
+            // For multiple makes, we use IN clause
+            const makes = req.query.make.split(","); // Split comma-separated makes
+            query = `SELECT DISTINCT model FROM cars WHERE make IN (${makes
+                .map((_, i) => `$${i + 1}`)
+                .join(",")})`;
+            params = makes;
             break;
         case "year":
-            query =
-                "SELECT DISTINCT year FROM cars WHERE make = $1 AND model = $2";
+            // For multiple makes and models
+            const models = req.query.model.split(",");
+            const yearsMakes = req.query.make.split(",");
+            query = `SELECT DISTINCT year FROM cars WHERE make IN (${yearsMakes
+                .map((_, i) => `$${i + 1}`)
+                .join(",")}) AND model IN (${models
+                .map((_, i) => `$${i + yearsMakes.length + 1}`)
+                .join(",")})`;
+            params = [...yearsMakes, ...models];
             break;
         case "trim":
-            query =
-                "SELECT DISTINCT trim, engine FROM cars WHERE make = $1 AND model = $2 AND year = $3";
+            const trimsModels = req.query.model.split(",");
+            const trimsMakes = req.query.make.split(",");
+            const years = req.query.year.split(",");
+            query = `SELECT DISTINCT trim, engine FROM cars WHERE make IN (${trimsMakes
+                .map((_, i) => `$${i + 1}`)
+                .join(",")}) AND model IN (${trimsModels
+                .map((_, i) => `$${i + trimsMakes.length + 1}`)
+                .join(",")}) AND year IN (${years
+                .map(
+                    (_, i) =>
+                        `$${i + trimsMakes.length + trimsModels.length + 1}`
+                )
+                .join(",")})`;
+            params = [...trimsMakes, ...trimsModels, ...years];
             break;
         case "engine":
-            query =
-                "SELECT DISTINCT engine FROM cars WHERE make = $1 AND model = $2 AND year = $3";
+            const enginesModels = req.query.model.split(",");
+            const enginesMakes = req.query.make.split(",");
+            const enginesYears = req.query.year.split(",");
+            query = `SELECT DISTINCT engine FROM cars WHERE make IN (${enginesMakes
+                .map((_, i) => `$${i + 1}`)
+                .join(",")}) AND model IN (${enginesModels
+                .map((_, i) => `$${i + enginesMakes.length + 1}`)
+                .join(",")}) AND year IN (${enginesYears
+                .map(
+                    (_, i) =>
+                        `$${i + enginesMakes.length + enginesModels.length + 1}`
+                )
+                .join(",")})`;
+            params = [...enginesMakes, ...enginesModels, ...enginesYears];
             break;
         default:
             res.status(400).send("Invalid type");
@@ -163,19 +198,21 @@ app.get("/api/:type", cache, async (req, res) => {
     }
 
     try {
-        const params = Object.values(req.query);
-        console.log('params', params)
+        console.log("query:", query);
+        console.log("params:", params);
         const { rows } = await pool.query(query, params);
 
         // Cache the result
-        const key = type === 'make' ? type : `${type}-${params.slice(-1)}`
+        const key = type === "make" ? type : `${type}-${params.join("-")}`;
         client.set(key, JSON.stringify(rows));
+
         res.json(rows);
     } catch (error) {
         console.error(error);
         res.status(500).send("Server error");
     }
 });
+
 
 // Clear cache on delete
 app.post("/clear-cache", (req, res) => {

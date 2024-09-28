@@ -12,9 +12,9 @@ export class AccessoriesListComponent implements OnInit {
   years: any[] = [];
   trims: any[] = [];
   engines: any[] = [];
-  selectedMake: any = null;
-  selectedModel: any = null;
-  selectedYear: any = null;
+  selectedMakes: any[] = [];
+  selectedModels: any[] = [];
+  selectedYears: any[] = [];
   selectedTrim: any[] = []; // Array to hold selected trims
   selectedEngine: any[] = []; // Array to hold selected engines
   disableApiRequests: boolean = false;
@@ -63,9 +63,9 @@ export class AccessoriesListComponent implements OnInit {
 
   // When the make changes, fetch models
   onMakeChange() {
-    this.getData('model', { make: this.selectedMake.make });
-    this.selectedModel = null; // Reset model selection
-    this.selectedYear = null; // Reset year selection
+    this.getData('model', { make: this.selectedMakes.map((make: any) => make.make)});
+    this.selectedModels = []; // Reset model selection
+    this.selectedYears = []; // Reset year selection
     this.trims = []; // Reset trims
     this.engines = []; // Reset engines
     this.selectedTrim = []; // Reset trim selection
@@ -75,10 +75,10 @@ export class AccessoriesListComponent implements OnInit {
   // When the model changes, fetch years
   onModelChange() {
     this.getData('year', {
-      make: this.selectedMake.make,
-      model: this.selectedModel.model,
+      make: this.selectedMakes.map((make: any) => make.make),
+      model: this.selectedModels.map((model: any) => model.model),
     });
-    this.selectedYear = null; // Reset year selection
+    this.selectedYears = []; // Reset year selection
     this.trims = []; // Reset trims
     this.engines = []; // Reset engines
     this.selectedTrim = []; // Reset trim selection
@@ -88,9 +88,9 @@ export class AccessoriesListComponent implements OnInit {
   // When the year changes, fetch trims
   onYearChange() {
     this.getData('trim', {
-      make: this.selectedMake.make,
-      model: this.selectedModel.model,
-      year: this.selectedYear.year,
+      make: this.selectedMakes.map((make: any) => make.make),
+      model: this.selectedModels.map((model: any) => model.model),
+      year: this.selectedYears.map((year: any) => year.year),
     });
     // this.getData('engine', {
     //   make: this.selectedMake.make,
@@ -128,9 +128,9 @@ export class AccessoriesListComponent implements OnInit {
     this.years = [];
     this.trims = [];
     this.engines = [];
-    this.selectedMake = null;
-    this.selectedModel = null;
-    this.selectedYear = null;
+    this.selectedMakes = [];
+    this.selectedModels = [];
+    this.selectedYears = [];
     this.selectedTrim = [];
     this.selectedEngine = [];
     this.combinedTrimEngineList = []; // Combined list of trim and engine per row
