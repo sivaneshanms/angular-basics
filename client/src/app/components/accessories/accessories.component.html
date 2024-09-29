@@ -41,6 +41,32 @@
       (change)="onYearChange()">
     </ng-select>
   </div>
+
+  <!-- Trim Dropdown (Single-Select) -->
+<div>
+  <label for="trim">Trim</label>
+  <ng-select 
+    [items]="trims" 
+    bindLabel="trim" 
+    placeholder="Select Trim"
+    [multiple]="false"  
+    [(ngModel)]="selectedTrim" 
+    (change)="onTrimChange()">
+  </ng-select>
+</div>
+
+<!-- Engine Dropdown (Single-Select) -->
+<div>
+  <label for="engine">Engine</label>
+  <ng-select 
+    [items]="engines" 
+    bindLabel="engine" 
+    placeholder="Select Engine"
+    [multiple]="false"  
+    [(ngModel)]="selectedEngine" 
+    (change)="onEngineChange()">
+  </ng-select>
+</div>
 </div>
 
 

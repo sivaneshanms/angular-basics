@@ -131,7 +131,7 @@ app.get("/scrap/:url(*)", async (req, res) => {
     }
 });
 // API routes
-app.get("/api/:type", cache, async (req, res) => {
+app.get("/api/:type", async (req, res) => {
     const { type } = req.params;
     let query;
     let params = [];
@@ -180,7 +180,8 @@ app.get("/api/:type", cache, async (req, res) => {
             const enginesModels = req.query.model.split(",");
             const enginesMakes = req.query.make.split(",");
             const enginesYears = req.query.year.split(",");
-            query = `SELECT DISTINCT engine FROM cars WHERE make IN (${enginesMakes
+            const enginesTrim = req.query.trim;
+            query = `SELECT DISTINCT trim, engine FROM cars WHERE make IN (${enginesMakes
                 .map((_, i) => `$${i + 1}`)
                 .join(",")}) AND model IN (${enginesModels
                 .map((_, i) => `$${i + enginesMakes.length + 1}`)
@@ -189,9 +190,54 @@ app.get("/api/:type", cache, async (req, res) => {
                     (_, i) =>
                         `$${i + enginesMakes.length + enginesModels.length + 1}`
                 )
-                .join(",")})`;
-            params = [...enginesMakes, ...enginesModels, ...enginesYears];
+                .join(",")}) AND trim IN ($${
+                enginesMakes.length +
+                enginesModels.length +
+                enginesYears.length +
+                1
+            })`;
+            params = [
+                ...enginesMakes,
+                ...enginesModels,
+                ...enginesYears,
+                enginesTrim,
+            ];
             break;
+        case "all-filter":
+            const filterModels = req.query.model.split(",");
+            const filterMakes = req.query.make.split(",");
+            const filterYears = req.query.year.split(",");
+            const filterTrim = req.query.trim;
+            const filterEngine = req.query.engine;
+            query = `SELECT DISTINCT trim, engine FROM cars WHERE make IN (${filterMakes
+                .map((_, i) => `$${i + 1}`)
+                .join(",")}) AND model IN (${filterModels
+                .map((_, i) => `$${i + filterMakes.length + 1}`)
+                .join(",")}) AND year IN (${filterYears
+                .map(
+                    (_, i) =>
+                        `$${i + filterMakes.length + filterModels.length + 1}`
+                )
+                .join(",")}) AND trim IN (${
+                filterMakes.length +
+                filterModels.length +
+                filterYears.length +
+                1
+            }) AND engine IN (${
+                filterMakes.length +
+                filterModels.length +
+                filterYears.length +
+                2
+            })`;
+            params = [
+                ...filterMakes,
+                ...filterModels,
+                ...filterYears,
+                filterTrim,
+                filterEngine
+            ];
+            break;
+
         default:
             res.status(400).send("Invalid type");
             return;
@@ -201,6 +247,7 @@ app.get("/api/:type", cache, async (req, res) => {
         console.log("query:", query);
         console.log("params:", params);
         const { rows } = await pool.query(query, params);
+        console.log('rows', rows)
 
         // Cache the result
         const key = type === "make" ? type : `${type}-${params.join("-")}`;
@@ -221,6 +268,6 @@ app.post("/clear-cache", (req, res) => {
     console.log("Cache cleared");
 });
 
-app.listen(5000, () => {
-    console.log("Server running on port 5000");
+app.listen(5001, () => {
+    console.log("Server running on port 5001");
 });

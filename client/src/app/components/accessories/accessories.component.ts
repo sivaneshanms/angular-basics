@@ -15,8 +15,8 @@ export class AccessoriesListComponent implements OnInit {
   selectedMakes: any[] = [];
   selectedModels: any[] = [];
   selectedYears: any[] = [];
-  selectedTrim: any[] = []; // Array to hold selected trims
-  selectedEngine: any[] = []; // Array to hold selected engines
+  selectedTrim: any; // Array to hold selected trims
+  selectedEngine: any; // Array to hold selected engines
   disableApiRequests: boolean = false;
   showReport: boolean = false;
   combinedTrimEngineList: any[] = []; // Combined list of trim and engine per row
@@ -38,11 +38,14 @@ export class AccessoriesListComponent implements OnInit {
       });
 
       this.http
-        .get<any[]>(`http://localhost:5000/api/${type}`, { params })
+        .get<any[]>(`http://localhost:5001/api/${type}`, { params })
         .subscribe((data: any) => {
+          console.log('data###',type, '-', data)
           switch (type) {
             case 'make':
+              console.log('inside make')
               this.makes = data;
+              console.log('this.makes', this.makes)
               break;
             case 'model':
               this.models = data;
@@ -53,7 +56,19 @@ export class AccessoriesListComponent implements OnInit {
             case 'trim':
               console.log('data in trim:', data);
               this.trims = data;
+              // this.engines = data;
+              // this.combineTrimEngineData();
+              break;
+            case 'engine':
+              console.log('data in engine:', data);
+              // this.trims = data;
               this.engines = data;
+              // this.combineTrimEngineData();
+              break;
+            case 'all-filter':
+              console.log('data in all-filter:', data);
+              // this.trims = data;
+              // this.engines = data;
               this.combineTrimEngineData();
               break;
           }
@@ -63,7 +78,9 @@ export class AccessoriesListComponent implements OnInit {
 
   // When the make changes, fetch models
   onMakeChange() {
-    this.getData('model', { make: this.selectedMakes.map((make: any) => make.make)});
+    this.getData('model', {
+      make: this.selectedMakes.map((make: any) => make.make),
+    });
     this.selectedModels = []; // Reset model selection
     this.selectedYears = []; // Reset year selection
     this.trims = []; // Reset trims
@@ -102,7 +119,24 @@ export class AccessoriesListComponent implements OnInit {
   }
 
   // When the trim changes, fetch engines
-  onTrimChange() {}
+  onTrimChange() {
+    this.getData('engine', {
+      make: this.selectedMakes.map((make: any) => make.make),
+      model: this.selectedModels.map((model: any) => model.model),
+      year: this.selectedYears.map((year: any) => year.year),
+      trim: this.selectedTrim.trim,
+    });
+  }
+
+  onEngineChange() {
+    this.getData('all-filter', {
+      make: this.selectedMakes.map((make: any) => make.make),
+      model: this.selectedModels.map((model: any) => model.model),
+      year: this.selectedYears.map((year: any) => year.year),
+      trim: this.selectedTrim.trim,
+      engine: this.selectedEngine.engine,
+    });
+  }
 
   preview() {
     this.showReport = true;
@@ -110,7 +144,7 @@ export class AccessoriesListComponent implements OnInit {
 
   clearMenu() {
     // this.http.post('http://localhost:5000/clear-cache', {}).subscribe(() => {
-      
+
     //   this.models = [];
     //   this.years = [];
     //   this.trims = [];
@@ -142,29 +176,29 @@ export class AccessoriesListComponent implements OnInit {
 
   // Existing constructor and ngOnInit...
 
-  toggleTrim(trim: any) {
-    const trimName = trim.trim; // Ensure you get the correct property
+  // toggleTrim(trim: any) {
+  //   const trimName = trim.trim; // Ensure you get the correct property
 
-    if (this.selectedTrim.includes(trimName)) {
-      this.selectedTrim = this.selectedTrim.filter((item) => item !== trimName); // Remove if already selected
-    } else {
-      this.selectedTrim.push(trimName); // Add if not selected
-      this.selectedTrim = Array.from(new Set(this.selectedTrim)); // Ensure unique values
-    }
-  }
+  //   if (this.selectedTrim.includes(trimName)) {
+  //     this.selectedTrim = this.selectedTrim.filter((item) => item !== trimName); // Remove if already selected
+  //   } else {
+  //     this.selectedTrim.push(trimName); // Add if not selected
+  //     this.selectedTrim = Array.from(new Set(this.selectedTrim)); // Ensure unique values
+  //   }
+  // }
 
-  toggleEngine(engine: any) {
-    const engineName = engine.engine; // Ensure you get the correct property
+  // toggleEngine(engine: any) {
+  //   const engineName = engine.engine; // Ensure you get the correct property
 
-    if (this.selectedEngine.includes(engineName)) {
-      this.selectedEngine = this.selectedEngine.filter(
-        (item) => item !== engineName
-      ); // Remove if already selected
-    } else {
-      this.selectedEngine.push(engineName); // Add if not selected
-      this.selectedEngine = Array.from(new Set(this.selectedEngine)); // Ensure unique values
-    }
-  }
+  //   if (this.selectedEngine.includes(engineName)) {
+  //     this.selectedEngine = this.selectedEngine.filter(
+  //       (item) => item !== engineName
+  //     ); // Remove if already selected
+  //   } else {
+  //     this.selectedEngine.push(engineName); // Add if not selected
+  //     this.selectedEngine = Array.from(new Set(this.selectedEngine)); // Ensure unique values
+  //   }
+  // }
 
   // Existing methods...
 
