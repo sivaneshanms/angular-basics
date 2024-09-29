@@ -38,7 +38,7 @@ export class AccessoriesListComponent implements OnInit {
       });
 
       this.http
-        .get<any[]>(`http://localhost:5001/api/${type}`, { params })
+        .get<any[]>(`http://localhost:5000/api/${type}`, { params })
         .subscribe((data: any) => {
           console.log('data###',type, '-', data)
           switch (type) {

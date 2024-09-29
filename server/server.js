@@ -218,12 +218,12 @@ app.get("/api/:type", async (req, res) => {
                     (_, i) =>
                         `$${i + filterMakes.length + filterModels.length + 1}`
                 )
-                .join(",")}) AND trim IN (${
+                .join(",")}) AND trim IN ($${
                 filterMakes.length +
                 filterModels.length +
                 filterYears.length +
                 1
-            }) AND engine IN (${
+            }) AND engine IN ($${
                 filterMakes.length +
                 filterModels.length +
                 filterYears.length +
@@ -268,6 +268,6 @@ app.post("/clear-cache", (req, res) => {
     console.log("Cache cleared");
 });
 
-app.listen(5001, () => {
-    console.log("Server running on port 5001");
+app.listen(5000, () => {
+    console.log("Server running on port 5000");
 });
