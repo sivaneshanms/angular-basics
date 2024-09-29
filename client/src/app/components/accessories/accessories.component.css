@@ -139,3 +139,49 @@ th {
 ng-select {
   border-top: none !important;
 }
+
+/* For the first row of dropdowns (Make, Model, Year) */
+.dropdown-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+/* Ensures each dropdown takes equal width and spacing */
+.dropdown-row > div {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.dropdown-row > div:last-child {
+  margin-right: 0;
+}
+
+/* Styles for the labels */
+label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #333;
+  text-align: left;
+}
+
+/* Full width dropdown for better appearance */
+.ng-select {
+  width: 100%;
+  font-size: 14px;
+  padding: 5px;
+}
+
+/* For Trim and Engine on separate lines */
+.trim-engine-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+/* Ensure Trim and Engine take equal width, but in separate rows */
+.trim-engine-row > div {
+  width: 100%;
+  margin-bottom: 10px;
+}

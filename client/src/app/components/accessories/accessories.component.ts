@@ -15,6 +15,7 @@ export class AccessoriesListComponent implements OnInit {
   selectedMakes: any[] = [];
   selectedModels: any[] = [];
   selectedYears: any[] = [];
+  selectedFilters: any[] = [];
   selectedTrim: any; // Array to hold selected trims
   selectedEngine: any; // Array to hold selected engines
   disableApiRequests: boolean = false;
@@ -69,7 +70,9 @@ export class AccessoriesListComponent implements OnInit {
               console.log('data in all-filter:', data);
               // this.trims = data;
               // this.engines = data;
-              this.combineTrimEngineData();
+              this.selectedFilters = data;
+              
+              // this.combineTrimEngineData();
               break;
           }
         });
@@ -98,8 +101,8 @@ export class AccessoriesListComponent implements OnInit {
     this.selectedYears = []; // Reset year selection
     this.trims = []; // Reset trims
     this.engines = []; // Reset engines
-    this.selectedTrim = []; // Reset trim selection
-    this.selectedEngine = []; // Reset engine selection
+    this.selectedTrim = null; // Reset trim selection
+    this.selectedEngine = null; // Reset engine selection
   }
 
   // When the year changes, fetch trims
@@ -114,8 +117,10 @@ export class AccessoriesListComponent implements OnInit {
     //   model: this.selectedModel.model,
     //   year: this.selectedYear.year,
     // });
+    this.trims = []; // Reset trims
     this.engines = []; // Reset engines
-    this.selectedEngine = []; // Reset engine selection
+    this.selectedTrim = null; // Reset trim selection
+    this.selectedEngine = null; // Reset engine selection
   }
 
   // When the trim changes, fetch engines
@@ -126,6 +131,8 @@ export class AccessoriesListComponent implements OnInit {
       year: this.selectedYears.map((year: any) => year.year),
       trim: this.selectedTrim.trim,
     });
+    this.engines = []; // Reset engines
+    this.selectedEngine = null; // Reset engine selection
   }
 
   onEngineChange() {
@@ -169,6 +176,7 @@ export class AccessoriesListComponent implements OnInit {
     this.selectedEngine = [];
     this.combinedTrimEngineList = []; // Combined list of trim and engine per row
     this.selectedItems = [];
+    this.selectedFilters = [];
     this.showReport = false;
   }
 
@@ -226,7 +234,7 @@ export class AccessoriesListComponent implements OnInit {
 
   // Filter engines based on search input
   get filteredEngines() {
-    return this.combinedTrimEngineList.filter((engine) =>
+    return this.selectedFilters.filter((engine) =>
       engine.engine.toLowerCase().includes(this.engineSearch.toLowerCase())
     );
   }
@@ -235,10 +243,9 @@ export class AccessoriesListComponent implements OnInit {
 
   // Combine trims and engines into a single list
   combineTrimEngineData() {
-    this.combinedTrimEngineList = [];
-    for (let i = 0; i < this.trims.length; i++) {
+    for (let i = 0; i < this.selectedFilters.length; i++) {
       if (this.engines[i]) {
-        this.combinedTrimEngineList.push({
+        this.selectedFilters.push({
           trim: this.trims[i].trim,
           engine: this.engines[i].engine,
         });

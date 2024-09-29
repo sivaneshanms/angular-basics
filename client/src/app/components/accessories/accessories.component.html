@@ -1,6 +1,6 @@
 <div class="selection-container">
-  <div class="dropdown-row">
-  <!-- Make Dropdown -->
+<div class="dropdown-row">
+  <!-- Make, Model, and Year Dropdowns on the first line -->
   <div>
     <label for="make">Make</label>
     <ng-select 
@@ -14,7 +14,6 @@
     </ng-select>
   </div>
 
-  <!-- Model Dropdown -->
   <div>
     <label for="model">Model</label>
     <ng-select 
@@ -28,7 +27,6 @@
     </ng-select>
   </div>
 
-  <!-- Year Dropdown -->
   <div>
     <label for="year">Year</label>
     <ng-select 
@@ -41,36 +39,38 @@
       (change)="onYearChange()">
     </ng-select>
   </div>
-
-  <!-- Trim Dropdown (Single-Select) -->
-<div>
-  <label for="trim">Trim</label>
-  <ng-select 
-    [items]="trims" 
-    bindLabel="trim" 
-    placeholder="Select Trim"
-    [multiple]="false"  
-    [(ngModel)]="selectedTrim" 
-    (change)="onTrimChange()">
-  </ng-select>
 </div>
 
-<!-- Engine Dropdown (Single-Select) -->
-<div>
-  <label for="engine">Engine</label>
-  <ng-select 
-    [items]="engines" 
-    bindLabel="engine" 
-    placeholder="Select Engine"
-    [multiple]="false"  
-    [(ngModel)]="selectedEngine" 
-    (change)="onEngineChange()">
-  </ng-select>
-</div>
+<!-- New line for Trim and Engine Dropdowns -->
+<div class="dropdown-row">
+  <div>
+    <label for="trim">Trim</label>
+    <ng-select 
+      [items]="trims" 
+      bindLabel="trim" 
+      placeholder="Select Trim"
+      [multiple]="false"  
+      [(ngModel)]="selectedTrim" 
+      (change)="onTrimChange()">
+    </ng-select>
+  </div>
+
+  <div>
+    <label for="engine">Engine</label>
+    <ng-select 
+      [items]="engines" 
+      bindLabel="engine" 
+      placeholder="Select Engine"
+      [multiple]="false"  
+      [(ngModel)]="selectedEngine" 
+      (change)="onEngineChange()">
+    </ng-select>
+  </div>
 </div>
 
 
-<div *ngIf="combinedTrimEngineList.length" class="table-container">
+
+<div *ngIf="selectedFilters.length" class="table-container">
   <!-- Select All Checkbox -->
   <div class="select-all">
     <label>
@@ -78,7 +78,7 @@
         type="checkbox" 
         [checked]="isAllSelected()" 
         (change)="toggleSelectAll()"> 
-      Select All
+      Select All Results
     </label>
   </div>
 
@@ -98,7 +98,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let item of engineSearch.length ? filteredEngines : combinedTrimEngineList">
+      <tr *ngFor="let item of engineSearch.length ? filteredEngines : selectedFilters">
         <td>
           <input 
             type="checkbox" 
@@ -114,7 +114,7 @@
 
 
 
-<div *ngIf="combinedTrimEngineList.length">
+<div *ngIf="selectedFilters.length">
   <button (click)="preview()">Preview</button>
   <button (click)="clearMenu()">Clear All</button>
   </div>
