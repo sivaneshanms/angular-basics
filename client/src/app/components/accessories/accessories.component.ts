@@ -90,6 +90,9 @@ export class AccessoriesListComponent implements OnInit {
     this.engines = []; // Reset engines
     this.selectedTrim = []; // Reset trim selection
     this.selectedEngine = []; // Reset engine selection
+    this.selectedFilters = [];
+    this.selectedItems = [];
+    this.showReport = false;
   }
 
   // When the model changes, fetch years
@@ -103,6 +106,9 @@ export class AccessoriesListComponent implements OnInit {
     this.engines = []; // Reset engines
     this.selectedTrim = null; // Reset trim selection
     this.selectedEngine = null; // Reset engine selection
+    this.selectedFilters = [];
+    this.selectedItems = [];
+    this.showReport = false;
   }
 
   // When the year changes, fetch trims
@@ -121,6 +127,9 @@ export class AccessoriesListComponent implements OnInit {
     this.engines = []; // Reset engines
     this.selectedTrim = null; // Reset trim selection
     this.selectedEngine = null; // Reset engine selection
+    this.selectedFilters = [];
+    this.selectedItems = [];
+    this.showReport = false;
   }
 
   // When the trim changes, fetch engines
@@ -133,6 +142,9 @@ export class AccessoriesListComponent implements OnInit {
     });
     this.engines = []; // Reset engines
     this.selectedEngine = null; // Reset engine selection
+    this.selectedFilters = [];
+    this.selectedItems = [];
+    this.showReport = false;
   }
 
   onEngineChange() {
@@ -265,7 +277,7 @@ export class AccessoriesListComponent implements OnInit {
 
   // Check if all items are selected
   isAllSelected() {
-    return this.selectedItems.length === this.combinedTrimEngineList.length;
+    return this.selectedItems.length === this.selectedFilters.length;
   }
 
   // Select or deselect all rows
@@ -273,7 +285,7 @@ export class AccessoriesListComponent implements OnInit {
     if (this.isAllSelected()) {
       this.selectedItems = [];
     } else {
-      this.selectedItems = [...this.combinedTrimEngineList];
+      this.selectedItems = [...this.selectedFilters];
     }
   }
 }

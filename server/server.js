@@ -164,7 +164,7 @@ app.get("/api/:type", async (req, res) => {
             const trimsModels = req.query.model.split(",");
             const trimsMakes = req.query.make.split(",");
             const years = req.query.year.split(",");
-            query = `SELECT DISTINCT trim, engine FROM cars WHERE make IN (${trimsMakes
+            query = `SELECT DISTINCT trim FROM cars WHERE make IN (${trimsMakes
                 .map((_, i) => `$${i + 1}`)
                 .join(",")}) AND model IN (${trimsModels
                 .map((_, i) => `$${i + trimsMakes.length + 1}`)
@@ -181,7 +181,7 @@ app.get("/api/:type", async (req, res) => {
             const enginesMakes = req.query.make.split(",");
             const enginesYears = req.query.year.split(",");
             const enginesTrim = req.query.trim;
-            query = `SELECT DISTINCT trim, engine FROM cars WHERE make IN (${enginesMakes
+            query = `SELECT DISTINCT engine FROM cars WHERE make IN (${enginesMakes
                 .map((_, i) => `$${i + 1}`)
                 .join(",")}) AND model IN (${enginesModels
                 .map((_, i) => `$${i + enginesMakes.length + 1}`)
