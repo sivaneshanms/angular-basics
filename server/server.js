@@ -44,10 +44,12 @@ const cache = async (req, res, next) => {
     console.log('params', params)
     const key = type === "make" ? type : `${type}-${params.slice(-1)}`;
     console.log('key', key)
-    const resp = await client.get(key);
-    if (resp) {
+    const resp = JSON.parse(await client.get(key));
+    // console.log("resp", resp);
+    if (resp?.length) {
+        
         console.log('from cache')
-        res.send(JSON.parse(resp))
+        res.send(resp)
     } else {
         console.log('cache miss')
         next();
@@ -131,7 +133,7 @@ app.get("/scrap/:url(*)", async (req, res) => {
     }
 });
 // API routes
-app.get("/api/:type", async (req, res) => {
+app.get("/api/:type", cache, async (req, res) => {
     const { type } = req.params;
     let query;
     let params = [];
